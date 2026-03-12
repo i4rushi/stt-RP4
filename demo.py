@@ -1,8 +1,10 @@
 #pyspeech imports
+from email.mime import audio
 import json
 import pyaudio
 import vosk
 import queue
+import numpy as np
 
 #ram tracking imports
 import psutil
@@ -55,6 +57,9 @@ def recognize_speech(stream, recognizer, stop_event, letter_queue):
             chunk_start = time.perf_counter() # when chunk starts
 
             data = stream.read(4096)
+            audio = np.frombuffer(data, dtype=np.int16)
+            audio = audio[::3]  # downsample by factor of 3
+            data = audio.tobytes()
 
             if recognizer.AcceptWaveform(data):
                 result_time = time.perf_counter() - chunk_start
@@ -106,7 +111,7 @@ def main():
 
     # Initialize the audio device
     audio_device = initialize_pyaudio()
-    rate = 16000 #sampling rate for VOSK
+    rate = 48000 #sampling rate for VOSK
     channels = 1
     frames_per_buffer = 8192
     stream = open_microphone_stream(audio_device, rate, channels, frames_per_buffer)
