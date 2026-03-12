@@ -39,7 +39,8 @@ def print_ram(stop_event):
 #             pass
 
 def open_microphone_stream(audio_device, rate, channels, frames_per_buffer):
-    stream = audio_device.open(format=pyaudio.paInt16, channels=channels, rate=rate, input=True, frames_per_buffer=frames_per_buffer)
+    stream = audio_device.open(format=pyaudio.paInt16, channels=channels, rate=rate, input=True, input_device_index=1, frames_per_buffer=frames_per_buffer)
+    #stream = audio_device.open(format=pyaudio.paInt16, channels=channels, rate=rate, input=True, frames_per_buffer=frames_per_buffer)
     stream.start_stream()
     return stream
 
